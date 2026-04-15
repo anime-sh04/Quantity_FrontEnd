@@ -113,7 +113,6 @@ declare const google: any;
           </div>
         </div>
 
-        <div id="g-btn-container" style="margin-top:8px;display:flex;justify-content:center;"></div>
       </div>
     </div>
   `
@@ -204,23 +203,16 @@ export class AuthModalComponent {
       this.toast.show('Google library not loaded', 'error');
       return;
     }
-
-    const container = document.getElementById('g-btn-container')!;
-    container.innerHTML = '';
-
+  
     google.accounts.id.initialize({
       client_id: environment.googleClientId,
       callback: (resp: any) => this.handleGoogleCredential(resp),
     });
-
-    // ONLY render button (no prompt)
-    google.accounts.id.renderButton(container, {
-      theme: 'outline',
-      size: 'large',
-      width: 356
-    });
-  }
   
+    // Directly open Google login
+    google.accounts.id.prompt();
+  }
+
   async handleGoogleCredential(response: any): Promise<void> {
     const result = await this.auth.googleLogin(response.credential);
     if (result.ok) {
