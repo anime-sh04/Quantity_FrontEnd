@@ -181,24 +181,46 @@ export class AuthModalComponent {
     }
   }
 
+  // googleLogin(): void {
+  //   if (typeof google === 'undefined') {
+  //     this.toast.show('Google library not loaded', 'error'); return;
+  //   }
+  //   const container = document.getElementById('g-btn-container')!;
+  //   container.innerHTML = '';
+  //   google.accounts.id.initialize({
+  //     client_id:   environment.googleClientId,
+  //     callback:    (resp: any) => this.handleGoogleCredential(resp),
+  //     auto_select: false
+  //   });
+  //   google.accounts.id.prompt((n: any) => {
+  //     if (n.isNotDisplayed() || n.isSkippedMoment()) {
+  //       google.accounts.id.renderButton(container, { theme: 'outline', size: 'large', width: 356 });
+  //     }
+  //   });
+  // }
+
   googleLogin(): void {
     if (typeof google === 'undefined') {
-      this.toast.show('Google library not loaded', 'error'); return;
+      this.toast.show('Google library not loaded', 'error');
+      return;
     }
+
     const container = document.getElementById('g-btn-container')!;
     container.innerHTML = '';
+
     google.accounts.id.initialize({
-      client_id:   environment.googleClientId,
-      callback:    (resp: any) => this.handleGoogleCredential(resp),
-      auto_select: false
+      client_id: environment.googleClientId,
+      callback: (resp: any) => this.handleGoogleCredential(resp),
     });
-    google.accounts.id.prompt((n: any) => {
-      if (n.isNotDisplayed() || n.isSkippedMoment()) {
-        google.accounts.id.renderButton(container, { theme: 'outline', size: 'large', width: 356 });
-      }
+
+    // ONLY render button (no prompt)
+    google.accounts.id.renderButton(container, {
+      theme: 'outline',
+      size: 'large',
+      width: 356
     });
   }
-
+  
   async handleGoogleCredential(response: any): Promise<void> {
     const result = await this.auth.googleLogin(response.credential);
     if (result.ok) {
