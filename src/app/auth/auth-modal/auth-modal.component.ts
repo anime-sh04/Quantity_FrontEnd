@@ -113,6 +113,7 @@ declare const google: any;
           </div>
         </div>
 
+        <div id="g-btn-container" style="margin-top:8px;display:flex;justify-content:center;"></div>
       </div>
     </div>
   `
@@ -180,37 +181,22 @@ export class AuthModalComponent {
     }
   }
 
-  // googleLogin(): void {
-  //   if (typeof google === 'undefined') {
-  //     this.toast.show('Google library not loaded', 'error'); return;
-  //   }
-  //   const container = document.getElementById('g-btn-container')!;
-  //   container.innerHTML = '';
-  //   google.accounts.id.initialize({
-  //     client_id:   environment.googleClientId,
-  //     callback:    (resp: any) => this.handleGoogleCredential(resp),
-  //     auto_select: false
-  //   });
-  //   google.accounts.id.prompt((n: any) => {
-  //     if (n.isNotDisplayed() || n.isSkippedMoment()) {
-  //       google.accounts.id.renderButton(container, { theme: 'outline', size: 'large', width: 356 });
-  //     }
-  //   });
-  // }
-
   googleLogin(): void {
     if (typeof google === 'undefined') {
-      this.toast.show('Google library not loaded', 'error');
-      return;
+      this.toast.show('Google library not loaded', 'error'); return;
     }
-  
+    const container = document.getElementById('g-btn-container')!;
+    container.innerHTML = '';
     google.accounts.id.initialize({
-      client_id: environment.googleClientId,
-      callback: (resp: any) => this.handleGoogleCredential(resp),
+      client_id:   environment.googleClientId,
+      callback:    (resp: any) => this.handleGoogleCredential(resp),
+      auto_select: false
     });
-  
-    // Directly open Google login
-    google.accounts.id.prompt();
+    google.accounts.id.prompt((n: any) => {
+      if (n.isNotDisplayed() || n.isSkippedMoment()) {
+        google.accounts.id.renderButton(container, { theme: 'outline', size: 'large', width: 356 });
+      }
+    });
   }
 
   async handleGoogleCredential(response: any): Promise<void> {
